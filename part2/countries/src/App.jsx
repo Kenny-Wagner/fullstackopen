@@ -42,7 +42,7 @@ const Country = ({country, visibleCountries, setVisibleCountries, isVisible, cou
       <img src ={country.flags.png} ></img>
       <h1>Weather in {country.capital}</h1>
       <p>temperature {countryWeather.main.temp} </p>
-      <img src ={`${weatherAPIUrl}/img/wn/${country.icon}@2x.png`}></img>
+      <img src ={`https://openweathermap.org/img/wn/${countryWeather.icon}@2x.png`}></img>
       
     </div>
     )
@@ -78,7 +78,6 @@ const App = () => {
 
     const [lat,lon] = filteredCountries[0].latlng
     const fullUrl = `${weatherAPIUrl}/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api_key}`
-    console.log(fullUrl)
       
     if (countryWeather === null) {
       axios
