@@ -1,8 +1,9 @@
 import { useState, useEffect} from 'react'
 import axios from 'axios'
 
+const api_key = import.meta.env.VITE_SOME_KEY
 const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api/'
-
+const weatherAPIUrl = 'https://api.openweathermap.org'
 const Form = ({country, setCountry}) => {
   return (
     <div>
@@ -13,7 +14,7 @@ const Form = ({country, setCountry}) => {
     </div>
   )
 }
-const Country = ({country, visibleCountries, setVisibleCountries, isVisible}) => {
+const Country = ({country, visibleCountries, setVisibleCountries, isVisible, countryWeather}) => {
     if (isVisible === false){
       return (
         <div>
@@ -24,6 +25,7 @@ const Country = ({country, visibleCountries, setVisibleCountries, isVisible}) =>
         </div>
       ) 
     }
+
     return (
       <div>
       <h1>{country.name.common}</h1>
@@ -38,6 +40,10 @@ const Country = ({country, visibleCountries, setVisibleCountries, isVisible}) =>
         }
       </ul>
       <img src ={country.flags.png} ></img>
+      <h1>Weather in {country.capital}</h1>
+      <p>temperature {countryWeather.main.temp} </p>
+      <img src ={`https://openweathermap.org/img/wn/${countryWeather.icon}@2x.png`}></img>
+      
     </div>
     )
   }
@@ -47,7 +53,7 @@ const App = () => {
  const [country, setCountry] = useState('')
  const [allCountries, setAllCountries] = useState([])
  const [visibleCountries, setVisibleCountries] = useState([])
-
+ const [countryWeather, setCountryWeather] = useState(null)
 
  useEffect(() => {
   axios
@@ -56,36 +62,47 @@ const App = () => {
  }, [])
 
  const filteredCountries = allCountries
- .filter(entry => 
-   entry.name.common.toUpperCase().includes(country.toUpperCase()))
-  
-   if(filteredCountries.length > 10){
-    return (
-    <div>
-      <Form country={country} setCountry={setCountry}/>
-      Too many matches, specify another filter 
-    </div>
-    )
-  }
+  .filter(entry => 
+    entry.name.common.toUpperCase().includes(country.toUpperCase()))
+    
+    if(filteredCountries.length > 10){
+      return (
+      <div>
+        <Form country={country} setCountry={setCountry}/>
+        Too many matches, specify another filter 
+      </div>
+      )
+    }
 
   if(filteredCountries.length === 1) {
+
+    const [lat,lon] = filteredCountries[0].latlng
+    const fullUrl = `${weatherAPIUrl}/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api_key}`
+      
+    if (countryWeather === null) {
+      axios
+      .get(fullUrl)
+      .then((response) =>setCountryWeather(response.data))
+      return <div></div>
+    }
+
     return (
     <div>
       <Form country={country} setCountry={setCountry} />
-      <Country key={filteredCountries[0]} country = {filteredCountries[0]} 
-      visibleCountries={visibleCountries} setVisibleCountries={setVisibleCountries} isVisible={true}/>
+      <Country key={filteredCountries[0].name.common} country = {filteredCountries[0]} 
+      visibleCountries={visibleCountries} setVisibleCountries={setVisibleCountries} isVisible={true} 
+      countryWeather={countryWeather}/>
     </div>
     )
   }
   return (
     <div>
       <Form country={country} setCountry={setCountry}/>
-      {filteredCountries.map(country => 
-        <div>
-        <Country key={country.name.common} country = {country} 
+      {filteredCountries.map(filteredCountry => 
+        <Country key={filteredCountry.name.common} country = {filteredCountry} 
         visibleCountries={visibleCountries} setVisibleCountries={setVisibleCountries} 
-        isVisible={visibleCountries.includes(country)} />
-        </div>
+        isVisible={visibleCountries.includes(filteredCountry)} 
+        countryWeather={countryWeather} />
         )
       }
     </div>
