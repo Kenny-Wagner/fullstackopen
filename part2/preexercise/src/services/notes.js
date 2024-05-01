@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://ubiquitous-happiness-pp9666645g4f5p4-3001.app.github.dev/notes'
+const baseUrl = 'http://localhost:3001/api/notes'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
