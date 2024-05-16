@@ -1,5 +1,15 @@
 import axios from 'axios'
-const baseUrl = 'https://ubiquitous-happiness-pp9666645g4f5p4-3001.app.github.dev/persons'
+
+let applicationHost = 'default'
+if (import.meta.env.VITE_CODESPACE_NAME !== undefined) {
+    applicationHost = `https://${import.meta.env.VITE_CODESPACE_NAME}-3001.app.github.dev`
+}
+else {
+    applicationHost = 'http://localhost:3001'
+}
+console.log(applicationHost)
+
+const baseUrl = `${applicationHost}/api/persons`
 
 const getAll = () => {
     const request = axios.get(baseUrl)
