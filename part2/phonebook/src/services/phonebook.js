@@ -1,15 +1,18 @@
 import axios from 'axios'
 
-let applicationHost = 'default'
-if (import.meta.env.VITE_CODESPACE_NAME !== undefined) {
-    applicationHost = `https://${import.meta.env.VITE_CODESPACE_NAME}-3001.app.github.dev`
-}
-else {
-    applicationHost = 'http://localhost:3001'
-}
-console.log(applicationHost)
+// let applicationHost = 'default'
+// console.log(`env val is ${import.meta.env.VITE_CODESPACE_NAME} and has type ${typeof(import.meta.env.VITE_CODESPACE_NAME)}`)
 
-const baseUrl = `${applicationHost}/api/persons`
+// if (import.meta.env.VITE_CODESPACE_NAME !== '') {
+//     applicationHost = `https://${import.meta.env.VITE_CODESPACE_NAME}-3001.app.github.dev`
+// }
+// else {
+//     applicationHost = 'http://localhost:3001'
+// }
+
+// console.log(`fetching data on domain ${applicationHost}`)
+
+const baseUrl = '/api/persons'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
