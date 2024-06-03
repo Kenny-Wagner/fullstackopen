@@ -103,6 +103,14 @@ const PersonForm = ({ persons, newName, setNewName, newNumber, setNewNumber, set
             setMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          console.log(error.response.data.error)
+          setMessage(error.response.data.error)
+          setMessageType('error')
+          setTimeout( () => {
+            setMessage(null)
+          }, 5000)
+        })
     }
     setNewName('')
     setNewNumber('') 
